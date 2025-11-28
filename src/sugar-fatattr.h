@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012, One Laptop Per Child.
+ * Copyright (C) 2013, Walter Bender
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,15 +17,13 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef __SUGAR_EVENT_CONTROLLERS_H__
-#define __SUGAR_EVENT_CONTROLLERS_H__
+#ifndef __SUGAR_FATATTR_H__
+#define __SUGAR_FATATTR_H__
 
-#define __SUGAR_CONTROLLERS_H_INSIDE__
+G_BEGIN_DECLS
 
-#include "sugar-event-controller.h"
-#include "sugar-long-press-controller.h"
-#include "sugar-swipe-controller.h"
+gboolean sugar_fat_set_hidden_attrib(const char *file);
 
-#undef __SUGAR_CONTROLLERS_H_INSIDE__
+G_END_DECLS
 
-#endif /* __SUGAR_EVENT_CONTROLLERS_H__ */
+#endif /* __SUGAR_FATATTR_H__ */

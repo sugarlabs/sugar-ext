@@ -58,7 +58,7 @@ struct _SugarLongPressControllerClass
 };
 
 GType                  sugar_long_press_controller_get_type (void) G_GNUC_CONST;
-SugarEventController * sugar_long_press_controller_new      (void);
+SugarEventController   *sugar_long_press_controller_new     (void);
 
 G_END_DECLS
 

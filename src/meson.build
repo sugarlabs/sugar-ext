@@ -1,27 +1,22 @@
-api_version = '0.1'
+api_version = '1.0'
 
 subdir('controllers')
-
-controllers_sources_full = []
-foreach src : controllers_sources
-  controllers_sources_full += 'controllers' / src
-endforeach
-
-# For headers, only include the main controllers header, not individual ones
-# The individual headers are protected by include guards
-controllers_main_header = ['controllers/sugar-event-controllers.h']
 
 sugar_ext_sources = [
   'sugar-ext.c',
   'sugar-grid.c',
-  'sugar-file-attributes.c',
-] + controllers_sources_full
+  'acme-volume.c',
+  'acme-volume-alsa.c',
+  'sugar-fatattr.c',
+]
 
 sugar_ext_headers = [
   'sugar-ext.h',
   'sugar-grid.h',
-  'sugar-file-attributes.h',
-] + controllers_main_header
+  'acme-volume.h',
+  'acme-volume-alsa.h',
+  'sugar-fatattr.h',
+]
 
 version_split = meson.project_version().split('.')
 version_conf = configuration_data()
@@ -43,6 +38,7 @@ sugar_ext_deps = [
   dependency('glib-2.0', version: '>= 2.70'),
   dependency('gobject-2.0'),
   dependency('gio-2.0'),
+  dependency('alsa', version: '>= 1.2'),
 ]
 
 sugar_ext_lib = shared_library('sugar-ext-' + api_version,
@@ -56,8 +52,8 @@ install_headers(sugar_ext_headers, subdir: 'sugar-ext')
 pkg = import('pkgconfig')
 pkg.generate(
   description: 'Sugar Toolkit GTK4 C Library - Core Sugar desktop environment integration',
-    libraries: sugar_ext_lib,
-         name: 'sugar-ext',
+    libraries: 'libsugarext.la',
+         name: 'SugarExt',
      filebase: 'sugar-ext-' + api_version,
       version: meson.project_version(),
       subdirs: 'sugar-ext',
@@ -68,12 +64,12 @@ pkg.generate(
 gnome = import('gnome')
 sugar_ext_gir = gnome.generate_gir(sugar_ext_lib,
               sources: [sugar_ext_sources, sugar_ext_headers],
-               header: 'sugar-ext.h',
-      export_packages: 'sugar-ext-' + api_version,
+      export_packages: 'SugarExt-' + api_version,
             nsversion: api_version,
-            namespace: 'Sugar',
-        symbol_prefix: 'sugar',
-    identifier_prefix: 'Sugar',
+            namespace: 'SugarExt',
+        symbol_prefix: ['sugar', 'acme'],
+    identifier_prefix: ['Sugar', 'Acme'],
+  include_directories: 'controllers/Sugar-Gestures-1.0.gir',
              includes: ['Gtk-4.0', 'Gio-2.0'],
               install: true,
 )
