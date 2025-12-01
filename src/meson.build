@@ -1,4 +1,4 @@
-api_version = '1.0'
+api_version = '2.0'
 
 subdir('controllers')
 
@@ -8,6 +8,7 @@ sugar_ext_sources = [
   'acme-volume.c',
   'acme-volume-alsa.c',
   'sugar-fatattr.c',
+  'sugar-clipboard.c',
 ]
 
 sugar_ext_headers = [
@@ -16,6 +17,7 @@ sugar_ext_headers = [
   'acme-volume.h',
   'acme-volume-alsa.h',
   'sugar-fatattr.h',
+  'sugar-clipboard.h',
 ]
 
 version_split = meson.project_version().split('.')
@@ -71,5 +73,6 @@ sugar_ext_gir = gnome.generate_gir(sugar_ext_lib,
     identifier_prefix: ['Sugar', 'Acme'],
   include_directories: 'controllers/Sugar-Gestures-1.0.gir',
              includes: ['Gtk-4.0', 'Gio-2.0'],
-              install: true,
+          install_gir: true,
+      install_typelib: true,
 )
