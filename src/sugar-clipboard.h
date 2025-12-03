@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2014, Martin Abente Lahaye - tch@sugarlabs.org
+ * Copyright (C) 2025, Chihurumnaya Ibiam   - ibiam@sugarlabs.org
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

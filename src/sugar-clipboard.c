@@ -23,10 +23,18 @@
 /**
  * sugar_clipboard_set_with_data:
  * @clipboard: a #GdkClipboard
- * @mime_type: mime type.
- * @user_data: user data to pass.
+ * @mime_type: mime type of data.
+ * @user_data: user data to set as on the clipboard.
  *
  * Sets a new content provider on clipboard.
+ *
+ * The clipboard will claim the GdkDisplay‘s resources and advertise
+ * these new contents to other applications.
+ * In the rare case of a failure, this function will return FALSE.
+ * The clipboard will then continue reporting its old contents and ignore provider.
+ * If the contents are read by either an external application or the clipboard‘s
+ * read functions, clipboard will select the best format to transfer the
+ * contents and then request that format from provider.
  *
  * Return value: %TRUE if setting the clipboard data succeeded.
 **/
