@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2012, One Laptop Per Child.
+ * Copyright (C) 2014, Martin Abente Lahaye - tch@sugarlabs.org
+ * Copyright (C) 2025, Chihurumnaya Ibiam   - ibiam@sugarlabs.org
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,15 +18,20 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef __SUGAR_EVENT_CONTROLLERS_H__
-#define __SUGAR_EVENT_CONTROLLERS_H__
+#ifndef __SUGAR_CLIPBOARD_H__
+#define __SUGAR_CLIPBOARD_H__
 
-#define __SUGAR_CONTROLLERS_H_INSIDE__
+#include <gtk/gtk.h>
+#include <glib.h>
 
-#include "sugar-event-controller.h"
-#include "sugar-long-press-controller.h"
-#include "sugar-swipe-controller.h"
+G_BEGIN_DECLS
 
-#undef __SUGAR_CONTROLLERS_H_INSIDE__
+gboolean
+sugar_clipboard_set_with_data (GdkClipboard *clipboard,
+                               const gchar  *mime_type,
+                               gpointer     user_data);
 
-#endif /* __SUGAR_EVENT_CONTROLLERS_H__ */
+G_END_DECLS
+
+#endif /* __SUGAR_CLIPBOARD_H__ */
+

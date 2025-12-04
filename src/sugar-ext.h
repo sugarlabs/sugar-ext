@@ -22,7 +22,6 @@
 
 #include <gtk/gtk.h>
 #include "sugar-grid.h"
-#include "sugar-file-attributes.h"
 #include "controllers/sugar-event-controllers.h"
 
 G_BEGIN_DECLS

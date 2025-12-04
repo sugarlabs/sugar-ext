@@ -81,4 +81,3 @@ add_project_arguments(project_c_args, language: 'c')
 subdir('src')
 subdir('tests')
 subdir('examples')
-

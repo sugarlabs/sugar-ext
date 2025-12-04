@@ -20,7 +20,7 @@
  */
 
 #define SUGAR_TOOLKIT_COMPILATION
-#include "sugar-long-press-controller.h"
+#include "sugar-event-controllers.h"
 #include <gtk/gtk.h>
 
 struct _SugarLongPressControllerPrivate
@@ -323,8 +323,8 @@ sugar_long_press_controller_init (SugarLongPressController *controller)
  *
  * Returns: (transfer full): a new #SugarLongPressController.
  **/
-SugarEventController *
-sugar_long_press_controller_new (void)
+SugarEventController
+*sugar_long_press_controller_new (void)
 {
   return g_object_new (SUGAR_TYPE_LONG_PRESS_CONTROLLER,
                        NULL);

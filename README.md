@@ -25,7 +25,6 @@ Tests include:
 - `utilities`: Utility functions testing
 - `sugar_grid`: Sugar Grid spatial layout system testing
 - `sugar_event_controller`: Tests for event handling and custom event controller logic
-- `sugar_file_attributes`: Tests for file attribute management and metadata handling
 - `sugar_long_press_controller`: Handling the delayed controlling and senses.
 
 ## Installation
