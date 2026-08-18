@@ -48,7 +48,7 @@ test_long_press_public_api(void)
 
 // Dummy callback for signal connection test
 static void
-on_pressed_dummy_cb(SugarLongPressController *controller, gint x, gint y, gpointer user_data)
+on_pressed_dummy_cb(SugarLongPressController *controller, gdouble x, gdouble y, gpointer user_data)
 {
     // This callback is only used to verify g_signal_connect.
     g_assert_not_reached();

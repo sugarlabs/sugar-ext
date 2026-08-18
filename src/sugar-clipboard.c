@@ -23,30 +23,34 @@
 /**
  * sugar_clipboard_set_with_data:
  * @clipboard: a #GdkClipboard
- * @mime_type: mime type of data.
- * @user_data: user data to set as on the clipboard.
+ * @mime_type: MIME type of @data.
+ * @data: a #GBytes holding the raw payload.
  *
- * Sets a new content provider on clipboard.
+ * Sets a new content provider on @clipboard advertising @mime_type.
  *
- * The clipboard will claim the GdkDisplay‘s resources and advertise
- * these new contents to other applications.
- * In the rare case of a failure, this function will return FALSE.
- * The clipboard will then continue reporting its old contents and ignore provider.
- * If the contents are read by either an external application or the clipboard‘s
- * read functions, clipboard will select the best format to transfer the
- * contents and then request that format from provider.
+ * The clipboard claims the display's selection and notifies other
+ * applications of the new contents. Returns %FALSE in the rare case
+ * where the display rejects the new owner; the clipboard then continues
+ * to report its previous contents.
  *
  * Return value: %TRUE if setting the clipboard data succeeded.
-**/
+ **/
 
 gboolean
 sugar_clipboard_set_with_data (GdkClipboard *clipboard,
                                const gchar  *mime_type,
-                               gpointer      user_data)
+                               GBytes       *data)
 {
-    GBytes *data = g_bytes_new_take (user_data, sizeof(user_data));
-    GdkContentProvider *provider = gdk_content_provider_new_for_bytes (mime_type, data);
+    GdkContentProvider *provider;
+    gboolean ret;
 
-    return gdk_clipboard_set_content (clipboard,
-				      provider);
+    g_return_val_if_fail (GDK_IS_CLIPBOARD (clipboard), FALSE);
+    g_return_val_if_fail (mime_type != NULL, FALSE);
+    g_return_val_if_fail (data != NULL, FALSE);
+
+    provider = gdk_content_provider_new_for_bytes (mime_type, data);
+    ret = gdk_clipboard_set_content (clipboard, provider);
+    g_object_unref (provider);
+
+    return ret;
 }

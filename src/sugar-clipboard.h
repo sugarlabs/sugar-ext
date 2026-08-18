@@ -29,7 +29,7 @@ G_BEGIN_DECLS
 gboolean
 sugar_clipboard_set_with_data (GdkClipboard *clipboard,
                                const gchar  *mime_type,
-                               gpointer     user_data);
+                               GBytes       *data);
 
 G_END_DECLS
 

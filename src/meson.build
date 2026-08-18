@@ -54,7 +54,7 @@ install_headers(sugar_ext_headers, subdir: 'sugar-ext')
 pkg = import('pkgconfig')
 pkg.generate(
   description: 'Sugar Toolkit GTK4 C Library - Core Sugar desktop environment integration',
-    libraries: 'libsugarext.la',
+    libraries: sugar_ext_lib,
          name: 'SugarExt',
      filebase: 'sugar-ext-' + api_version,
       version: meson.project_version(),

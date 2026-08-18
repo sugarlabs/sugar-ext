@@ -33,7 +33,7 @@
 #include <string.h>
 
 // This function is wrapped by getattrs/setattrs
-static int _ioctl_attrs(char *file, __u32 *attrs, int ioctlnum, char *verb)
+static int _ioctl_attrs(const char *file, __u32 *attrs, int ioctlnum, const char *verb)
 {
     int fd;
 
@@ -41,36 +41,33 @@ static int _ioctl_attrs(char *file, __u32 *attrs, int ioctlnum, char *verb)
     fd = open(file, O_RDONLY | O_NOATIME);
     if (fd < 0) {
         fprintf(stderr, "Error opening '%s': %s\n", file, strerror(errno));
-        goto err;
+        return -1;
     }
 
     if (ioctl(fd, ioctlnum, attrs) != 0) {
         fprintf(stderr, "Error %s attributes: %s\n", verb, strerror(errno));
-        goto err;
+        close (fd);
+        return -1;
     }
 
     close (fd);
     return 0;
-
-    err:
-        close (fd);
-        return -1;
 }
 
-static int getattrs(char *file, __u32 *attrs)
+static int getattrs(const char *file, __u32 *attrs)
 {
     return _ioctl_attrs(file, attrs, FAT_IOCTL_GET_ATTRIBUTES, "reading");
 }
 
-static int setattrs(char *file, __u32 *attrs)
+static int setattrs(const char *file, __u32 *attrs)
 {
     return _ioctl_attrs(file, attrs, FAT_IOCTL_SET_ATTRIBUTES, "writing");
 }
 
-static int set_hidden_attrib(char *pathname)
+static int set_hidden_attrib(const char *pathname)
 {
     __u32 attrs = 0;
-    char *file = NULL;
+    const char *file = NULL;
 
     file = pathname;
     if (getattrs(file, &attrs) == 0) {

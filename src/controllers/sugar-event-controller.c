@@ -212,7 +212,12 @@ _sugar_event_controller_widget_event (GtkEventController *event_controller,
           data->current_exclusive != item->controller)
         continue;
 
-      if (gdk_event_get_event_type (event) == GDK_GRAB_BROKEN)
+      /* In GTK4, GDK_GRAB_BROKEN no longer exists; grab releases are
+       * signalled via GDK_TOUCH_CANCEL for touch sequences, or the
+       * Wayland compositor simply stops delivering events.  Reset the
+       * controller on a touch-cancel so state machines tidy up.
+       */
+      if (gdk_event_get_event_type (event) == GDK_TOUCH_CANCEL)
         sugar_event_controller_reset (item->controller);
       else
         {
@@ -254,7 +259,7 @@ _sugar_event_controller_widget_data_new (GtkWidget *widget)
 {
   SugarControllerWidgetData *data;
 
-  data = g_slice_new0 (SugarControllerWidgetData);
+  data = g_new0 (SugarControllerWidgetData, 1);
   data->widget = widget;
   data->controllers = g_array_new (FALSE, TRUE, sizeof (SugarControllerItem));
   data->event_controller = gtk_event_controller_legacy_new ();
@@ -270,7 +275,7 @@ _sugar_event_controller_widget_data_free (SugarControllerWidgetData *data)
 {
   guint i;
 
-  if (data->event_controller)
+  if (data->event_controller && data->widget && GTK_IS_WIDGET (data->widget))
     gtk_widget_remove_controller (data->widget, data->event_controller);
 
   for (i = 0; i < data->controllers->len; i++)
@@ -283,7 +288,7 @@ _sugar_event_controller_widget_data_free (SugarControllerWidgetData *data)
     }
 
   g_array_unref (data->controllers);
-  g_slice_free (SugarControllerWidgetData, data);
+  g_free (data);
 }
 
 static void
@@ -292,7 +297,7 @@ _sugar_event_controller_state_notify (SugarEventController *controller,
                                       GtkWidget            *widget)
 {
   SugarControllerWidgetData *data;
-  SugarControllerItem *item, *ptr;
+  SugarControllerItem *item = NULL, *ptr;
   SugarEventControllerState state;
   guint i;
 
@@ -403,9 +408,9 @@ sugar_event_controller_detach (SugarEventController *controller,
         {
           sugar_event_controller_reset (item->controller);
           g_object_set (controller, "widget", NULL, NULL);
-          g_object_unref (item->controller);
           g_signal_handler_disconnect (item->controller,
                                        item->notify_handler_id);
+          g_object_unref (item->controller);
 
           g_array_remove_index_fast (data->controllers, i);
           removed = TRUE;

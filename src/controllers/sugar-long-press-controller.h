@@ -53,8 +53,8 @@ struct _SugarLongPressControllerClass
   SugarEventControllerClass parent_class;
 
   void (* pressed) (SugarLongPressController *controller,
-                    gint                      x,
-                    gint                      y);
+                    gdouble                   x,
+                    gdouble                   y);
 };
 
 GType                  sugar_long_press_controller_get_type (void) G_GNUC_CONST;

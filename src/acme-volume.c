@@ -113,10 +113,12 @@ AcmeVolume *acme_volume_new (void)
 #endif
 #ifdef HAVE_ALSA
 	vol = ACME_VOLUME  (g_object_new (acme_volume_alsa_get_type (), NULL));
-	if (vol != NULL && ACME_VOLUME_ALSA (vol)->_priv != NULL)
-		return vol;
-	if (ACME_VOLUME_ALSA (vol)->_priv == NULL)
+	if (vol != NULL)
+	{
+		if (ACME_VOLUME_ALSA (vol)->_priv != NULL)
+			return vol;
 		g_object_unref (vol);
+	}
 #endif
 #ifdef HAVE_OSS
 	vol = ACME_VOLUME  (g_object_new (acme_volume_oss_get_type (), NULL));

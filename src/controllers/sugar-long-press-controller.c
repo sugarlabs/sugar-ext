@@ -28,12 +28,10 @@ struct _SugarLongPressControllerPrivate
   GdkDevice *device;
   GdkEventSequence *sequence;
   gint64 start_time;
-  gint x;
-  gint y;
-  gint root_x;
-  gint root_y;
+  gdouble x;
+  gdouble y;
   guint timeout_id;
-  guint threshold;
+  gdouble threshold;
   guint delay;
   guint cancelled : 1;
   guint triggered : 1;
@@ -57,10 +55,6 @@ static guint signals[N_SIGNALS] = { 0 };
 
 #define DEFAULT_LONG_PRESS_TIME 500
 #define TOUCH_THRESHOLD 20
-
-#define sugar_long_press_controller_get_instance_private(self) \
-  ((SugarLongPressControllerPrivate *) \
-   sugar_long_press_controller_get_instance_private (self))
 
 static void
 sugar_long_press_controller_finalize (GObject *object)
@@ -184,24 +178,16 @@ sugar_long_press_controller_handle_event (SugarEventController *controller,
   GdkEventType event_type;
   GdkDevice *device;
   GdkEventSequence *sequence;
-  gdouble x, y, root_x, root_y;
-  
+  gdouble x, y;
+
   event_type = gdk_event_get_event_type (event);
   device = gdk_event_get_device (event);
-  
-  /* Get event sequence for touch events */
   sequence = gdk_event_get_event_sequence (event);
-  
-  /* Get coordinates */
+
   gdk_event_get_position (event, &x, &y);
-  
-  /* For root coordinates, we need to translate from window coordinates */
-  root_x = x;
-  root_y = y;
 
   if (event_type == GDK_BUTTON_PRESS || event_type == GDK_TOUCH_BEGIN)
     {
-      /* Only handle primary button for mouse events */
       if (event_type == GDK_BUTTON_PRESS)
         {
           guint button = gdk_button_event_get_button (event);
@@ -218,8 +204,6 @@ sugar_long_press_controller_handle_event (SugarEventController *controller,
       priv->sequence = sequence;
       priv->x = x;
       priv->y = y;
-      priv->root_x = root_x;
-      priv->root_y = root_y;
       priv->start_time = g_get_monotonic_time ();
       priv->cancelled = FALSE;
       priv->triggered = FALSE;
@@ -233,17 +217,17 @@ sugar_long_press_controller_handle_event (SugarEventController *controller,
            priv->device == device && priv->sequence == sequence)
     {
       gboolean triggered = priv->triggered;
-      
+
       sugar_long_press_controller_reset (long_press);
       return triggered;
     }
   else if ((event_type == GDK_MOTION_NOTIFY || event_type == GDK_TOUCH_UPDATE) &&
            priv->device == device && priv->sequence == sequence)
     {
-      gint dx, dy;
+      gdouble dx, dy;
 
-      dx = ABS (priv->root_x - root_x);
-      dy = ABS (priv->root_y - root_y);
+      dx = ABS (priv->x - x);
+      dy = ABS (priv->y - y);
 
       if (dx > priv->threshold || dy > priv->threshold)
         {
@@ -286,7 +270,7 @@ sugar_long_press_controller_class_init (SugarLongPressControllerClass *klass)
                   G_STRUCT_OFFSET (SugarLongPressControllerClass, pressed),
                   NULL, NULL,
                   NULL,
-                  G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_INT);
+                  G_TYPE_NONE, 2, G_TYPE_DOUBLE, G_TYPE_DOUBLE);
 
   /**
    * SugarLongPressController:delay-factor:
@@ -313,7 +297,7 @@ sugar_long_press_controller_init (SugarLongPressController *controller)
   priv = controller->priv;
 
   priv->delay = DEFAULT_LONG_PRESS_TIME;
-  priv->threshold = TOUCH_THRESHOLD;
+  priv->threshold = (gdouble) TOUCH_THRESHOLD;
 }
 
 /**

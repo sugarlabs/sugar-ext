@@ -98,6 +98,7 @@ sugar_grid_finalize(GObject *object)
     SugarGrid *grid = SUGAR_GRID(object);
 
     g_free(grid->weights);
+    G_OBJECT_CLASS(sugar_grid_parent_class)->finalize(object);
 }
 
 static void
